@@ -1,0 +1,38 @@
+{
+  "initial_url": "https://para.testar.org/parabank/index.htm",
+  "initial_title": "ParaBank | Welcome | Online Banking",
+  "states": [
+    {
+      "id": "SA10acdwe54e3379749613",
+      "title": "ParaBank | Welcome | Online Banking"
+    },
+    {
+      "id": "SA1ec8jbr52d1987302593",
+      "title": "ParaBank | Site Map"
+    }
+  ],
+  "actions": [
+    {
+      "id": "WAc7jjlv82505510887",
+      "desc": "Left Click at 'Site Map'",
+      "webHref": "sitemap.htm"
+    },
+    {
+      "id": "WAfqiihs71281549880",
+      "desc": "Left Click at 'Home'",
+      "webHref": "index.htm"
+    }
+  ],
+  "transitions": [
+    {
+      "sourceStateId": "SA10acdwe54e3379749613",
+      "actionId": "WAc7jjlv82505510887",
+      "targetStateId": "SA1ec8jbr52d1987302593"
+    },
+    {
+      "sourceStateId": "SA1ec8jbr52d1987302593",
+      "actionId": "WAfqiihs71281549880",
+      "targetStateId": "SA10acdwe54e3379749613"
+    }
+  ]
+}
