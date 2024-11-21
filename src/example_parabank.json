@@ -1,38 +1,58 @@
 {
-  "initial_url": "https://para.testar.org/parabank/index.htm",
-  "initial_title": "ParaBank | Welcome | Online Banking",
-  "states": [
+  "InitialUrl": "https://para.testar.org/parabank/index.htm",
+  "InitialPage": "ParaBank | Welcome | Online Banking",
+  "ConcreteState": [
     {
-      "id": "SA10acdwe54e3379749613",
-      "title": "ParaBank | Welcome | Online Banking"
+      "AbstractID": "SA1ec8jbr52d1987302593",
+      "WebTitle": "ParaBank | Site Map"
     },
     {
-      "id": "SA1ec8jbr52d1987302593",
-      "title": "ParaBank | Site Map"
+      "AbstractID": "SA1mr9m7y54e4092431614",
+      "WebTitle": "ParaBank | Welcome | Online Banking"
     }
   ],
-  "actions": [
+  "ConcreteAction": [
     {
-      "id": "WAc7jjlv82505510887",
-      "desc": "Left Click at 'Site Map'",
-      "webHref": "sitemap.htm"
+      "AbstractID": "WA1wrmn41909853392",
+      "Desc": "Left Click at 'home'",
+      "WebHref": "index.htm"
     },
     {
-      "id": "WAfqiihs71281549880",
-      "desc": "Left Click at 'Home'",
-      "webHref": "index.htm"
+      "AbstractID": "WA1cc1r43521422318",
+      "Desc": "Left Click at 'Home'",
+      "WebHref": "index.htm"
+    },
+    {
+      "AbstractID": "WAc7jjlv82505510887",
+      "Desc": "Left Click at 'Site Map'",
+      "WebHref": "sitemap.htm"
     }
   ],
-  "transitions": [
+  "ConcreteTransitions": [
     {
-      "sourceStateId": "SA10acdwe54e3379749613",
-      "actionId": "WAc7jjlv82505510887",
-      "targetStateId": "SA1ec8jbr52d1987302593"
+      "Source": "SA1ec8jbr52d1987302593",
+      "Target": "SA1mr9m7y54e4092431614",
+      "Action": "WA1wrmn41909853392"
     },
     {
-      "sourceStateId": "SA1ec8jbr52d1987302593",
-      "actionId": "WAfqiihs71281549880",
-      "targetStateId": "SA10acdwe54e3379749613"
+      "Source": "SA1ec8jbr52d1987302593",
+      "Target": "SA1mr9m7y54e4092431614",
+      "Action": "WA1cc1r43521422318"
+    },
+    {
+      "Source": "SA1mr9m7y54e4092431614",
+      "Target": "SA1mr9m7y54e4092431614",
+      "Action": "WA1wrmn41909853392"
+    },
+    {
+      "Source": "SA1mr9m7y54e4092431614",
+      "Target": "SA1mr9m7y54e4092431614",
+      "Action": "WA1cc1r43521422318"
+    },
+    {
+      "Source": "SA1mr9m7y54e4092431614",
+      "Target": "SA1ec8jbr52d1987302593",
+      "Action": "WAc7jjlv82505510887"
     }
   ]
 }
