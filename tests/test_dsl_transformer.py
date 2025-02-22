@@ -59,6 +59,11 @@ def test_generate_dsl():
       "Action": "WA1cc1r43521422318"
     },
     {
+      "Source": "SA1ec8jbr52d1987302593",
+      "Target": "SA1ec8jbr52d1987302593",
+      "Action": "WAc7jjlv82505510887"
+    },
+    {
       "Source": "SA1mr9m7y54e4092431614",
       "Target": "SA1ec8jbr52d1987302593",
       "Action": "WAc7jjlv82505510887"
@@ -70,20 +75,6 @@ def test_generate_dsl():
     expected_dsl = """
 timeout 30.0
 external 'extern'
-
-def Left_Click_at_home()
-  receive 'click_link',
-  constraint: %(selector == "a[href*='index.htm']")
-  send 'page_title',
-  constraint: %(_title == "ParaBank | Welcome | Online Banking")
-end
-
-def Left_Click_at_Home()
-  receive 'click_link',
-  constraint: %(selector == "a[href*='index.htm']")
-  send 'page_title',
-  constraint: %(_title == "ParaBank | Welcome | Online Banking")
-end
 
 def Left_Click_at_home()
   receive 'click_link',
@@ -124,25 +115,17 @@ process('testar'){
   goto 'ParaBank | Welcome | Online Banking'
 
   state 'ParaBank | Site Map'
-  Left_Click_at_home()
-  goto 'ParaBank | Welcome | Online Banking'
-
-  state 'ParaBank | Site Map'
-  Left_Click_at_Home()
-  goto 'ParaBank | Welcome | Online Banking'
-
+    choice {
+      o { Left_Click_at_home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_Home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_Site_Map(); goto 'ParaBank | Site Map' }
+    }
   state 'ParaBank | Welcome | Online Banking'
-  Left_Click_at_home()
-  goto 'ParaBank | Welcome | Online Banking'
-
-  state 'ParaBank | Welcome | Online Banking'
-  Left_Click_at_Home()
-  goto 'ParaBank | Welcome | Online Banking'
-
-  state 'ParaBank | Welcome | Online Banking'
-  Left_Click_at_Site_Map()
-  goto 'ParaBank | Site Map'
-
+    choice {
+      o { Left_Click_at_home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_Home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_Site_Map(); goto 'ParaBank | Site Map' }
+    }
 }
 """
 
