@@ -1,5 +1,5 @@
 import json
-from dsl.dsl_generator import DSLGenerator
+from transformer_state_choice.dsl_generator import DSLGenerator
 
 # Function to map states based on their AbstractID and WebTitle
 def map_states(json_states):
@@ -9,7 +9,7 @@ def map_states(json_states):
 def map_actions(json_actions):
     return {
         action['AbstractID']: {
-            'Desc': action['Desc'],
+            'Desc': action['Desc'].replace(" ", "_").replace("'", ""),
             'action_constraint': f"%(selector == \"a[href*='{action['WebHref']}']\")",
             'response': 'page_title',
         }
@@ -54,7 +54,7 @@ def generate_dsl_from_json(json_data):
             if action_desc not in unique_actions:
                 unique_actions.add(action_desc)
                 dsl.add_step(
-                    step_name=action_desc.replace(" ", "_").replace("'", ""),  # Clean the action name
+                    step_name=action_desc,
                     receive_trigger='click_link',
                     receive_constraint=transition['action_constraint'],
                     send_trigger='page_title',
@@ -75,7 +75,7 @@ def generate_dsl_from_json(json_data):
         dsl.output.append(f"  state '{state}'")
         dsl.output.append("    choice {")
         for transition in transitions:
-            action_name = transition['action'].replace(" ", "_").replace("'", "")
+            action_name = transition['action']
             dsl.output.append(f"      o {{ {action_name}(); goto '{transition['target']}' }}")
         dsl.output.append("    }")
     

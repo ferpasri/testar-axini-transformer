@@ -1,4 +1,13 @@
-{
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+
+import json
+from transformer_state_choice.json_to_dsl import generate_dsl_from_json
+
+def test_generate_dsl():
+    # Example JSON input
+    example_json = {
   "InitialUrl": "https://para.testar.org/parabank/index.htm",
   "InitialPage": "ParaBank | Welcome | Online Banking",
   "ConcreteState": [
@@ -446,3 +455,181 @@
     }
   ]
 }
+
+    # Expected DSL output
+    expected_dsl = """
+timeout 30.0
+external 'extern'
+
+def Left_Click_at_Forgot_login_info?()
+  receive 'click_link', constraint: %(selector == "a[href*='lookup.htm']")
+  send 'page_title', constraint: %(_title == "ParaBank | Customer Lookup")
+end
+
+def Left_Click_at_Register()
+  receive 'click_link', constraint: %(selector == "a[href*='register.htm']")
+  send 'page_title', constraint: %(_title == "ParaBank | Register for Free Online Account Access")
+end
+
+def Left_Click_at_home()
+  receive 'click_link', constraint: %(selector == "a[href*='index.htm']")
+  send 'page_title', constraint: %(_title == "ParaBank | Welcome | Online Banking")
+end
+
+def Left_Click_at_Services()
+  receive 'click_link', constraint: %(selector == "a[href*='services.htm']")
+  send 'page_title', constraint: %(_title == "ParaBank | Services")
+end
+
+def Left_Click_at_Contact_Us()
+  receive 'click_link', constraint: %(selector == "a[href*='contact.htm']")
+  send 'page_title', constraint: %(_title == "ParaBank | Customer Care")
+end
+
+def Left_Click_at_contact()
+  receive 'click_link', constraint: %(selector == "a[href*='contact.htm']")
+  send 'page_title', constraint: %(_title == "ParaBank | Customer Care")
+end
+
+def Left_Click_at_Site_Map()
+  receive 'click_link', constraint: %(selector == "a[href*='sitemap.htm']")
+  send 'page_title', constraint: %(_title == "ParaBank | Site Map")
+end
+
+def Left_Click_at_about()
+  receive 'click_link', constraint: %(selector == "a[href*='about.htm']")
+  send 'page_title', constraint: %(_title == "ParaBank | About Us")
+end
+
+def Left_Click_at_About_Us()
+  receive 'click_link', constraint: %(selector == "a[href*='about.htm']")
+  send 'page_title', constraint: %(_title == "ParaBank | About Us")
+end
+
+def Left_Click_at_Home()
+  receive 'click_link', constraint: %(selector == "a[href*='index.htm']")
+  send 'page_title', constraint: %(_title == "ParaBank | Welcome | Online Banking")
+end
+
+def Left_Click_at_Read_More()
+  receive 'click_link', constraint: %(selector == "a[href*='services.htm']")
+  send 'page_title', constraint: %(_title == "ParaBank | Services")
+end
+
+process('testar') {
+
+  channel('extern') {
+    stimulus 'visit', '_url' => :string
+    stimulus 'click_link', 'selector' => :string
+    response 'page_title', '_title' => :string, '_url' => :string
+  }
+
+  var 'initial_url', :string, 'https://para.testar.org/parabank/index.htm'
+
+  state 'start'
+  receive 'visit',
+  constraint: "_url == initial_url"
+  send 'page_title',
+  constraint: %(_title == "ParaBank | Welcome | Online Banking")
+  goto 'ParaBank | Welcome | Online Banking'
+
+  state 'ParaBank | Site Map'
+    choice {
+      o { Left_Click_at_Forgot_login_info?(); goto 'ParaBank | Customer Lookup' }
+      o { Left_Click_at_Register(); goto 'ParaBank | Register for Free Online Account Access' }
+      o { Left_Click_at_home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_Services(); goto 'ParaBank | Services' }
+      o { Left_Click_at_Contact_Us(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_contact(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_Site_Map(); goto 'ParaBank | Site Map' }
+      o { Left_Click_at_about(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_About_Us(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_Home(); goto 'ParaBank | Welcome | Online Banking' }
+    }
+  state 'ParaBank | Customer Lookup'
+    choice {
+      o { Left_Click_at_Forgot_login_info?(); goto 'ParaBank | Customer Lookup' }
+      o { Left_Click_at_home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_about(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_Contact_Us(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_Services(); goto 'ParaBank | Services' }
+      o { Left_Click_at_contact(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_Home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_About_Us(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_Register(); goto 'ParaBank | Register for Free Online Account Access' }
+      o { Left_Click_at_Site_Map(); goto 'ParaBank | Site Map' }
+    }
+  state 'ParaBank | About Us'
+    choice {
+      o { Left_Click_at_Home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_about(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_Services(); goto 'ParaBank | Services' }
+      o { Left_Click_at_About_Us(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_Contact_Us(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_Site_Map(); goto 'ParaBank | Site Map' }
+      o { Left_Click_at_Register(); goto 'ParaBank | Register for Free Online Account Access' }
+      o { Left_Click_at_contact(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_Forgot_login_info?(); goto 'ParaBank | Customer Lookup' }
+      o { Left_Click_at_home(); goto 'ParaBank | Welcome | Online Banking' }
+    }
+  state 'ParaBank | Customer Care'
+    choice {
+      o { Left_Click_at_Site_Map(); goto 'ParaBank | Site Map' }
+      o { Left_Click_at_Contact_Us(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_about(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_Forgot_login_info?(); goto 'ParaBank | Customer Lookup' }
+      o { Left_Click_at_contact(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_Register(); goto 'ParaBank | Register for Free Online Account Access' }
+      o { Left_Click_at_Home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_About_Us(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_Services(); goto 'ParaBank | Services' }
+    }
+  state 'ParaBank | Register for Free Online Account Access'
+    choice {
+      o { Left_Click_at_Services(); goto 'ParaBank | Services' }
+      o { Left_Click_at_Site_Map(); goto 'ParaBank | Site Map' }
+      o { Left_Click_at_home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_about(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_Forgot_login_info?(); goto 'ParaBank | Customer Lookup' }
+      o { Left_Click_at_Home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_Register(); goto 'ParaBank | Register for Free Online Account Access' }
+      o { Left_Click_at_contact(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_About_Us(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_Contact_Us(); goto 'ParaBank | Customer Care' }
+    }
+  state 'ParaBank | Services'
+    choice {
+      o { Left_Click_at_Forgot_login_info?(); goto 'ParaBank | Customer Lookup' }
+      o { Left_Click_at_home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_contact(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_Site_Map(); goto 'ParaBank | Site Map' }
+      o { Left_Click_at_About_Us(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_about(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_Register(); goto 'ParaBank | Register for Free Online Account Access' }
+      o { Left_Click_at_Contact_Us(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_Home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_Services(); goto 'ParaBank | Services' }
+    }
+  state 'ParaBank | Welcome | Online Banking'
+    choice {
+      o { Left_Click_at_Contact_Us(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_home(); goto 'ParaBank | Welcome | Online Banking' }
+      o { Left_Click_at_about(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_contact(); goto 'ParaBank | Customer Care' }
+      o { Left_Click_at_Read_More(); goto 'ParaBank | Services' }
+      o { Left_Click_at_Forgot_login_info?(); goto 'ParaBank | Customer Lookup' }
+      o { Left_Click_at_Site_Map(); goto 'ParaBank | Site Map' }
+      o { Left_Click_at_About_Us(); goto 'ParaBank | About Us' }
+      o { Left_Click_at_Register(); goto 'ParaBank | Register for Free Online Account Access' }
+      o { Left_Click_at_Services(); goto 'ParaBank | Services' }
+      o { Left_Click_at_Home(); goto 'ParaBank | Welcome | Online Banking' }
+    }
+}
+"""
+
+    # Run the transformer
+    generated_dsl = generate_dsl_from_json(example_json)
+
+    # Assert output matches expected
+    assert generated_dsl.strip() == expected_dsl.strip()

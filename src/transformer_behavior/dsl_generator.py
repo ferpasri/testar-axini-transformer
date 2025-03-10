@@ -20,17 +20,15 @@ class DSLGenerator:
         This step includes the receive trigger and send constraints.
         """
         self.output.append(f"def {step_name}()")
-        self.output.append(f"  receive '{receive_trigger}',")
-        self.output.append(f"  constraint: {receive_constraint}")
-        self.output.append(f"  send '{send_trigger}',")
-        self.output.append(f"  constraint: {send_constraint}")
-        self.output.append(f"end\n")
+        self.output.append(f"  receive '{receive_trigger}', constraint: {receive_constraint}")
+        self.output.append(f"  send '{send_trigger}', constraint: {send_constraint}")
+        self.output.append("end\n")
 
     def start_process(self, process_name):
         """
         Starts the process block in the DSL with the provided process name.
         """
-        self.output.append(f"process('{process_name}'){{\n")
+        self.output.append(f"process('{process_name}') {{\n")
 
     def add_channel(self, channel_name):
         """
@@ -42,34 +40,34 @@ class DSLGenerator:
         self.output.append("    response 'page_title', '_title' => :string, '_url' => :string")
         self.output.append("  }\n")
 
-    def add_initial(self, initial_url, initial_constraint, initial_goto_state):
+    def add_behavior(self, behavior_name, behavior_type, initial_page, is_launch):
         """
-        Defines the initial URL, state, and the conditions under which the system should transition.
+        Adds a behavior block. The first behavior ('launch') receives 'visit', others use 'repeat'.
         """
-        # Define the initial_url variable
-        self.output.append(f"  var 'initial_url', :string, '{initial_url}'\n")
-        
-        # Define the initial state 'start'
-        self.output.append("  state 'start'")
-        self.output.append("  receive 'visit',")
-        self.output.append("  constraint: \"_url == initial_url\"")
-        self.output.append("  send 'page_title',")
-        self.output.append(f"  constraint: {initial_constraint}")
-        self.output.append(f"  goto '{initial_goto_state}'\n")
+        if is_launch:
+            self.output.append(f"  behavior('{behavior_name}') {{")
+            self.output.append("    receive 'visit',")
+            self.output.append("    constraint: \"_url == initial_url\"")
+            self.output.append("    send 'page_title',")
+            self.output.append(f"    constraint: %(_title == \"{initial_page}\")")
+            self.output.append("  }")
+        else:
+            self.output.append(f"  behavior('{behavior_name}', {behavior_type}) {{")
+            self.output.append("    repeat {")
 
-    def add_state(self, name, on_action, goto_state):
+    def add_initial(self, initial_url, initial_state):
         """
-        Adds a state definition, with the actions associated with that state and its transition.
+        Defines the initial URL, call, and state.
         """
-        self.output.append(f"  state '{name}'")
-        self.output.append(f"  {on_action}()")
-        self.output.append(f"  goto '{goto_state}'\n")
+        self.output.append(f"  var 'initial_url', :string, '{initial_url}'\n")
+        self.output.append("  call 'launch'")
+        self.output.append(f"  behave_as '{initial_state}'\n")
 
     def finalize_process(self):
         """
         Finalizes the process block by closing the process definition.
         """
-        self.output.append("}\n")
+        self.output.append("}")
 
     def render(self):
         """

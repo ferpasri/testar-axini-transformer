@@ -14,10 +14,22 @@ Install dependencies from requirements.txt
 
 `cd src`
 
-`python main.py example_parabank.json axini_parabank_model.txt`
+then  
+
+`python main.py state example_parabank.json axini_parabank_state_choice.txt`  
+
+or  
+
+`python main.py behavior example_parabank.json axini_parabank_behavior.txt`  
 
 # Test execution
 
-`cd tests`
+`cd tests`  
 
-`pytest test_dsl_transformer.py`
+then  
+
+`pytest test_dsl_transformer_state_choice.py`  
+
+or  
+
+`pytest test_dsl_transformer_behavior.py`  
